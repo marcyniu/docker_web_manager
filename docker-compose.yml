@@ -3,6 +3,8 @@ version: '3.8'
 
 services:
   app:
+    image: docker-web-manager
+    container_name: docker_web_manager_app
     build:
       context: .
       dockerfile: Dockerfile

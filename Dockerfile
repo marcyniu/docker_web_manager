@@ -8,6 +8,8 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY webpack.config.js ./
 COPY jest.config.js ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
 
 # Install dependencies
 RUN npm ci

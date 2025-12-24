@@ -182,6 +182,12 @@ docker-compose up -d
 
 The application will be available at http://localhost:8080
 
+### Stop the container
+
+```bash
+docker-compose down
+```
+
 ### Using Dockerfile directly
 
 #### Build the image
@@ -195,18 +201,20 @@ docker build -t docker-web-manager .
 ```bash
 docker run -d \
   -p 8080:80 \
-  --name docker-web-manager \
+  --name docker_web_manager_app \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/data:/app/data \
+  -e NODE_ENV=production \
   docker-web-manager
 ```
 
 **Note**: The `-v /var/run/docker.sock:/var/run/docker.sock` mount is required to allow the application to communicate with the Docker daemon.
 
-### Stop the container
+### Stop and remove the container
 
 ```bash
-docker-compose down
+docker stop docker_web_manager_app
+docker rm docker_web_manager_app
 ```
 
 ## Configuration
