@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '../api/ApiClient';
+import { FiBox, FiPlay, FiLayers, FiDatabase } from 'react-icons/fi';
 
 interface Stats {
   containers: number;
@@ -41,37 +42,70 @@ export const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="has-text-centered"><p>Loading...</p></div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
+      </div>
+    );
   }
+
+  const statCards = [
+    { 
+      label: 'Total Containers', 
+      value: stats.containers, 
+      icon: FiBox,
+      gradient: 'from-blue-500 to-cyan-500',
+      iconBg: 'bg-blue-100 dark:bg-blue-900'
+    },
+    { 
+      label: 'Running Containers', 
+      value: stats.running, 
+      icon: FiPlay,
+      gradient: 'from-green-500 to-emerald-500',
+      iconBg: 'bg-green-100 dark:bg-green-900'
+    },
+    { 
+      label: 'Images', 
+      value: stats.images, 
+      icon: FiLayers,
+      gradient: 'from-purple-500 to-pink-500',
+      iconBg: 'bg-purple-100 dark:bg-purple-900'
+    },
+    { 
+      label: 'Volumes', 
+      value: stats.volumes, 
+      icon: FiDatabase,
+      gradient: 'from-orange-500 to-red-500',
+      iconBg: 'bg-orange-100 dark:bg-orange-900'
+    },
+  ];
 
   return (
     <div>
-      <h1 className="title">Dashboard</h1>
-      <div className="columns is-multiline">
-        <div className="column is-3">
-          <div className="card stat-card">
-            <div className="stat-number">{stats.containers}</div>
-            <div className="stat-label">Total Containers</div>
-          </div>
-        </div>
-        <div className="column is-3">
-          <div className="card stat-card">
-            <div className="stat-number status-running">{stats.running}</div>
-            <div className="stat-label">Running Containers</div>
-          </div>
-        </div>
-        <div className="column is-3">
-          <div className="card stat-card">
-            <div className="stat-number">{stats.images}</div>
-            <div className="stat-label">Images</div>
-          </div>
-        </div>
-        <div className="column is-3">
-          <div className="card stat-card">
-            <div className="stat-number">{stats.volumes}</div>
-            <div className="stat-label">Volumes</div>
-          </div>
-        </div>
+      <div className="page-header">
+        <h1 className="page-title">
+          <FiBox className="text-blue-600 dark:text-blue-400" />
+          Dashboard
+        </h1>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <div key={index} className="stat-card">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-lg ${stat.iconBg}`}>
+                  <Icon className="h-6 w-6 text-current" />
+                </div>
+              </div>
+              <div className={`stat-number bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                {stat.value}
+              </div>
+              <div className="stat-label">{stat.label}</div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

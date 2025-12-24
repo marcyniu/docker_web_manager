@@ -1,35 +1,40 @@
 # Docker Web Manager
 
-A web application to manage local and network Docker containers, images, volumes, and networks. Built with Node.js, TypeScript, React, and Bulma CSS.
+A modern web application to manage local and network Docker containers, images, volumes, and networks. Built with Node.js 25, TypeScript, React, and Tailwind CSS.
 
 ## Features
 
-- **Dashboard**: Overview of Docker resources (containers, images, volumes)
-- **Container Management**: Start, stop, restart, and remove containers
-- **Image Management**: View, pull, and remove Docker images
-- **Volume Management**: List and remove Docker volumes
-- **Network Management**: View and remove Docker networks
-- **Settings**: Configure application settings stored in SQLite
+- **Dashboard**: Beautiful overview of Docker resources with gradient stats cards
+- **Container Management**: Start, stop, restart, and remove containers with visual status indicators
+- **Image Management**: View, pull, and remove Docker images with real-time feedback
+- **Volume Management**: List and remove Docker volumes with modern UI
+- **Network Management**: View and remove Docker networks with enhanced visibility
+- **Settings**: Configure application settings with dark/light mode toggle
+- **Dark Mode**: Full dark mode support with smooth transitions
+- **Modern UI**: Built with Tailwind CSS featuring gradients, shadows, and animations
+- **Icons**: Beautiful Feather icons throughout the interface
 
 ## Technology Stack
 
 ### Backend
-- **Node.js** with **TypeScript**
-- **Express.js** for REST API
+- **Node.js 25** with **TypeScript 5.7**
+- **Express.js 4.21** for REST API
 - **Docker Engine API** for Docker operations
 - **JSON file storage** for settings and configuration
 - **Object-Oriented Programming** with clean architecture (Services, Controllers, Routes)
 
 ### Frontend
-- **React** with **TypeScript**
-- **React Router** for multi-page routing
-- **Bulma CSS** for styling
-- **Axios** for API communication
+- **React 18.3** with **TypeScript**
+- **React Router 7.1** for multi-page routing
+- **Tailwind CSS 3.4** for modern, responsive styling
+- **React Icons 5.4** (Feather Icons) for beautiful iconography
+- **Axios 1.7** for API communication
+- **Dark Mode** with Context API and localStorage persistence
 
 ### Infrastructure
 - **Multi-stage Dockerfile** (build + Nginx production stage)
-- **Webpack** for client bundling
-- **Jest** for testing
+- **Webpack 5.97** with PostCSS for client bundling
+- **Jest 29.7** for testing
 
 ## Project Structure
 
@@ -46,8 +51,9 @@ docker_web_manager/
 │   └── client/
 │       ├── api/                # API client
 │       ├── components/         # React components
+│       ├── context/            # React context (Theme)
 │       ├── pages/              # React page components
-│       ├── styles/             # CSS files
+│       ├── styles/             # Tailwind CSS files
 │       ├── App.tsx             # Main React component
 │       └── index.tsx           # Client entry point
 ├── dist/                       # Compiled output
@@ -55,6 +61,8 @@ docker_web_manager/
 ├── Dockerfile                  # Multi-stage Docker build
 ├── docker-compose.yml          # Docker Compose configuration
 ├── nginx.conf                  # Nginx configuration
+├── tailwind.config.js          # Tailwind CSS configuration
+├── postcss.config.js           # PostCSS configuration
 ├── package.json                # Dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
 ├── webpack.config.js           # Webpack configuration
@@ -63,8 +71,8 @@ docker_web_manager/
 
 ## Prerequisites
 
-- **Node.js** (v18 or higher)
-- **npm** (v9 or higher)
+- **Node.js** (v25 or higher)
+- **npm** (v10 or higher)
 - **Docker** (for running the app in a container or managing containers)
 
 ## Installation
@@ -124,7 +132,7 @@ chmod +x scripts/build.sh
 
 This will:
 - Compile TypeScript server code to `dist/server/`
-- Bundle React client code to `dist/client/`
+- Bundle React client code with Tailwind CSS to `dist/client/`
 
 ### Run production build
 
@@ -184,6 +192,7 @@ docker build -t docker-web-manager .
 ```bash
 docker run -d \
   -p 8080:80 \
+  --name docker-web-manager \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/data:/app/data \
   docker-web-manager
@@ -201,10 +210,24 @@ docker-compose down
 
 Application settings are stored in JSON file at `data/settings.json`. You can modify settings through the Settings page in the web UI or edit the JSON file directly.
 
-Default settings:
-- `docker_socket`: `/var/run/docker.sock`
-- `refresh_interval`: `5000` (ms)
-- `theme`: `light`
+The dark/light mode preference is stored in the browser's localStorage and persists across sessions.
+
+## UI Features
+
+### Dark Mode
+Toggle between light and dark themes using the switch in the Settings page. The preference is saved automatically.
+
+### Modern Design Elements
+- **Gradient stats cards** on the dashboard
+- **Smooth animations** and hover effects
+- **Status badges** with color coding (running, stopped, paused)
+- **Icon buttons** with tooltips
+- **Responsive tables** with hover states
+- **Loading spinners** for async operations
+- **Empty states** with helpful messages
+
+### Color Palette
+The application uses a professional blue-based color scheme that works beautifully in both light and dark modes.
 
 ## Architecture
 
@@ -215,6 +238,7 @@ The application follows **Object-Oriented Programming** principles with clear se
 3. **Controllers** (`controllers/`): Handle HTTP requests and responses
 4. **Routes** (`routes/`): Define API endpoints
 5. **Database Manager** (`DatabaseManager.ts`): Manage SQLite operations
+6. **Theme Context** (`ThemeContext.tsx`): Global dark mode state management
 
 Each class/module is in a separate file, and related files are grouped in folders.
 
@@ -274,6 +298,17 @@ sudo usermod -aG docker $USER
 
 Then log out and log back in.
 
+## Recent Updates (December 2025)
+
+- ✨ Upgraded to Node.js 25
+- 🎨 Migrated from Bulma to Tailwind CSS 3.4
+- 🌙 Added full dark mode support with toggle
+- 🎯 Added beautiful Feather icons throughout the UI
+- 📦 Updated all dependencies to latest versions
+- 💅 Redesigned all pages with modern gradients and animations
+- ⚡ Improved loading states and empty states
+- 🎭 Added smooth transitions and hover effects
+
 ## License
 
 ISC
@@ -281,3 +316,4 @@ ISC
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
