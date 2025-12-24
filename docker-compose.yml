@@ -1,0 +1,18 @@
+# Build and run with Docker Compose
+version: '3.8'
+
+services:
+  app:
+    image: docker-web-manager
+    container_name: docker_web_manager_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
