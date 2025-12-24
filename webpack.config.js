@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist/client'),
       filename: 'bundle.[contenthash].js',
-      publicPath: '/static/',
+      publicPath: isProduction ? '/static/' : '/',
       clean: true
     },
     resolve: {
@@ -50,7 +50,14 @@ module.exports = (env, argv) => {
       },
       port: 3001,
       hot: true,
-      historyApiFallback: true
+      historyApiFallback: true,
+      proxy: [
+        {
+          context: ['/api'],
+          target: 'http://localhost:3000',
+          changeOrigin: true
+        }
+      ]
     }
   };
 };
