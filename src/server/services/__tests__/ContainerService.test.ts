@@ -1,5 +1,5 @@
-import { ContainerService } from '../services/ContainerService';
-import { DockerClient } from '../docker/DockerClient';
+import { ContainerService } from '../ContainerService';
+import { DockerClient } from '../../docker/DockerClient';
 
 describe('ContainerService', () => {
   let containerService: ContainerService;

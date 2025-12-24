@@ -17,7 +17,7 @@ A web application to manage local and network Docker containers, images, volumes
 - **Node.js** with **TypeScript**
 - **Express.js** for REST API
 - **Docker Engine API** for Docker operations
-- **SQLite** (better-sqlite3) for settings storage
+- **JSON file storage** for settings and configuration
 - **Object-Oriented Programming** with clean architecture (Services, Controllers, Routes)
 
 ### Frontend
@@ -199,7 +199,7 @@ docker-compose down
 
 ## Configuration
 
-Application settings are stored in SQLite database at `data/settings.db`. You can modify settings through the Settings page in the web UI.
+Application settings are stored in JSON file at `data/settings.json`. You can modify settings through the Settings page in the web UI or edit the JSON file directly.
 
 Default settings:
 - `docker_socket`: `/var/run/docker.sock`

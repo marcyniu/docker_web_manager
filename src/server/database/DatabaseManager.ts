@@ -1,5 +1,5 @@
-import Database from 'better-sqlite3';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export interface Setting {
   key: string;
@@ -8,37 +8,35 @@ export interface Setting {
   updated_at: string;
 }
 
-export class DatabaseManager {
-  private db: Database.Database;
+interface SettingsStore {
+  [key: string]: Setting;
+}
 
-  constructor(dbPath: string = './data/settings.db') {
-    const resolvedPath = path.resolve(dbPath);
-    this.db = new Database(resolvedPath);
+export class DatabaseManager {
+  private dbPath: string;
+  private settings: SettingsStore;
+
+  constructor(dbPath: string = './data/settings.json') {
+    this.dbPath = path.resolve(dbPath);
+    this.settings = {};
     this.initialize();
   }
 
   private initialize(): void {
-    this.db.exec(`
-      CREATE TABLE IF NOT EXISTS settings (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL,
-        description TEXT,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
+    // Ensure directory exists
+    const dir = path.dirname(this.dbPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
-    this.db.exec(`
-      CREATE TABLE IF NOT EXISTS docker_hosts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        socket_path TEXT NOT NULL,
-        is_default INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // Insert default settings if not exists
-    this.insertDefaultSettings();
+    // Load existing settings or create new file
+    if (fs.existsSync(this.dbPath)) {
+      const data = fs.readFileSync(this.dbPath, 'utf-8');
+      this.settings = JSON.parse(data);
+    } else {
+      this.insertDefaultSettings();
+      this.save();
+    }
   }
 
   private insertDefaultSettings(): void {
@@ -48,44 +46,44 @@ export class DatabaseManager {
       { key: 'theme', value: 'light', description: 'UI theme (light/dark)' }
     ];
 
-    const insert = this.db.prepare(`
-      INSERT OR IGNORE INTO settings (key, value, description)
-      VALUES (?, ?, ?)
-    `);
-
     for (const setting of defaults) {
-      insert.run(setting.key, setting.value, setting.description);
+      if (!this.settings[setting.key]) {
+        this.settings[setting.key] = {
+          ...setting,
+          updated_at: new Date().toISOString()
+        };
+      }
     }
   }
 
+  private save(): void {
+    fs.writeFileSync(this.dbPath, JSON.stringify(this.settings, null, 2));
+  }
+
   getSetting(key: string): Setting | undefined {
-    const stmt = this.db.prepare('SELECT * FROM settings WHERE key = ?');
-    return stmt.get(key) as Setting | undefined;
+    return this.settings[key];
   }
 
   getAllSettings(): Setting[] {
-    const stmt = this.db.prepare('SELECT * FROM settings ORDER BY key');
-    return stmt.all() as Setting[];
+    return Object.values(this.settings).sort((a, b) => a.key.localeCompare(b.key));
   }
 
   setSetting(key: string, value: string, description?: string): void {
-    const stmt = this.db.prepare(`
-      INSERT INTO settings (key, value, description, updated_at)
-      VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-      ON CONFLICT(key) DO UPDATE SET
-        value = excluded.value,
-        description = COALESCE(excluded.description, description),
-        updated_at = CURRENT_TIMESTAMP
-    `);
-    stmt.run(key, value, description);
+    this.settings[key] = {
+      key,
+      value,
+      description: description || this.settings[key]?.description,
+      updated_at: new Date().toISOString()
+    };
+    this.save();
   }
 
   deleteSetting(key: string): void {
-    const stmt = this.db.prepare('DELETE FROM settings WHERE key = ?');
-    stmt.run(key);
+    delete this.settings[key];
+    this.save();
   }
 
   close(): void {
-    this.db.close();
+    // No-op for JSON file storage
   }
 }
