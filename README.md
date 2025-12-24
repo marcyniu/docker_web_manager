@@ -100,8 +100,11 @@ Start both the server and client with hot-reload:
 npm run dev
 ```
 
-- **Backend**: http://localhost:3000
-- **Frontend Dev Server**: http://localhost:3001
+- **Backend API**: http://localhost:3000/api
+- **Frontend Dev Server**: http://localhost:3001 (webpack dev server with hot reload)
+- **Full App**: http://localhost:3001 (recommended for development)
+
+**Note**: In development mode, use http://localhost:3001 to see the app with hot module replacement. The port 3000 serves only the API and won't have the latest client code.
 
 ### Run server only
 
@@ -276,6 +279,40 @@ Each class/module is in a separate file, and related files are grouped in folder
 - `DELETE /api/settings/:key` - Delete setting
 
 ## Troubleshooting
+
+### Port 3001 already in use (EADDRINUSE)
+
+If you see `Error: listen EADDRINUSE: address already in use :::3001`, a previous webpack dev server is still running. Kill it with:
+
+```bash
+pkill -f webpack
+```
+
+Or find and kill the specific process:
+```bash
+lsof -ti:3001 | xargs kill -9
+```
+
+### Blank page when accessing http://localhost:3000 directly
+
+In development mode (`npm run dev`), always use http://localhost:3001 for the full application with hot reload. Port 3000 only serves the API endpoints.
+
+For production:
+1. Build first: `npm run build`
+2. Then run: `npm start`
+3. Access: http://localhost:3000
+
+### Tailwind CSS not showing after Docker build
+
+This issue has been fixed! The webpack configuration now properly extracts CSS for production builds using `mini-css-extract-plugin`. The CSS is included in a separate `styles.[hash].css` file that's automatically linked in the HTML.
+
+Verify the build includes CSS:
+```bash
+npm run build
+ls -lh dist/client/styles.*.css
+```
+
+You should see a ~40KB CSS file.
 
 ### Cannot connect to Docker daemon
 
