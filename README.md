@@ -180,7 +180,7 @@ chmod +x scripts/test.sh
 docker-compose up -d
 ```
 
-The application will be available at http://localhost:8080
+The application will be available at http://localhost:80
 
 ### Stop the container
 
@@ -200,7 +200,7 @@ docker build -t docker-web-manager .
 
 ```bash
 docker run -d \
-  -p 8080:80 \
+  --net dev-net \
   --name docker_web_manager_app \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/data:/app/data \

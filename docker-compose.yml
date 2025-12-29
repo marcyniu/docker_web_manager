@@ -9,10 +9,16 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
     environment:
       - NODE_ENV=production
     restart: unless-stopped
+    networks:
+      - dev-net
+
+networks:
+  dev-net:
+    external: true

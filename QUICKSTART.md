@@ -53,7 +53,7 @@ npm start
 ```bash
 docker-compose up -d
 ```
-- Application: http://localhost:8080
+- Application: http://localhost:80
 - **Important**: Mounts `/var/run/docker.sock` for Docker API access
 
 ## File Structure Verified
