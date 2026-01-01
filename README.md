@@ -201,6 +201,7 @@ docker build -t docker-web-manager .
 ```bash
 docker run -d \
   --net dev-net \
+  --restart=always \
   --name docker_web_manager_app \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/data:/app/data \
